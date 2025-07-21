@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<div class="container">
+
+    <!-- Task Creation Form -->
+    <section class="card">
+        <h2>➕ Create a Task</h2>
+        <form method="POST" action="{{ url_for('dashboard.add_task') }}" class="task-form">
+            <input type="text" name="title" placeholder="Task Title" required>
+            <input type="date" name="due_date" required>
+
+            <select name="priority" required>
+                <option value="" disabled selected>Priority</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+            </select>
+
+            <input type="text" name="category" placeholder="Category (e.g. Work, Personal)" required>
+            <input type="datetime-local" name="reminder_time" placeholder="Reminder Time">
+            <textarea name="notes" placeholder="Notes about the task..." rows="3"></textarea>
+
+            <label>🔁 Repeat:
+                <select name="recurrence_pattern">
+                    <option value="">None</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekdays">Weekdays (Mon–Sat)</option>
+                    <option value="weekly">Weekly</option>
+                </select>
+            </label>
+
+            <input type="text" name="tags" placeholder="#tag1 #tag2 (optional)">
+            <button type="submit">Add Task</button>
+        </form>
+    </section>
+
+    <!-- Today's Tasks -->
+    <section class="card">
+        <h2>📅 Today's Tasks <span class="count">({{ tasks_today | length }})</span></h2>
+        {% if tasks_today %}
+        <ul class="task-list">
+            {% for task in tasks_today %}
+            <li>
+                <form method="POST" action="{{ url_for('dashboard.complete_task', task_id=task.id) }}">
+                    <label class="{% if task.is_done %}done{% endif %}">
+                        <input type="checkbox" onchange="this.form.submit()" {% if task.is_done %}checked{% endif %}>
+                        <strong>{{ task.title }}</strong>
+                        {% if task.tags %}
+                        <span class="tags">
+                            {% for tag in task.tags.split() %}
+                            <span class="tag">{{ tag }}</span>
+                            {% endfor %}
+                        </span>
+                        {% endif %}
+                    </label>
+                    <span class="due-date">{{ task.due_date }}</span>
+                    {% if task.is_recurring %}<span class="icon">🔁</span>{% endif %}
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="empty">No tasks today! 🎉</p>
+        {% endif %}
+    </section>
+
+    <!-- Backlog -->
+    <section class="card">
+        <h2>📦 Backlog <span class="count">({{ backlog_tasks | length }})</span></h2>
+        {% if backlog_tasks %}
+        <ul class="task-list">
+            {% for task in backlog_tasks %}
+            <li class="backlog">
+                <form method="POST" action="{{ url_for('dashboard.complete_task', task_id=task.id) }}">
+                    <label class="{% if task.is_done %}done{% endif %}">
+                        <input type="checkbox" onchange="this.form.submit()" {% if task.is_done %}checked{% endif %}>
+                        <strong>{{ task.title }}</strong>
+                        {% if task.tags %}
+                        <span class="tags">
+                            {% for tag in task.tags.split() %}
+                            <span class="tag">{{ tag }}</span>
+                            {% endfor %}
+                        </span>
+                        {% endif %}
+                    </label>
+                    <span class="overdue">due {{ task.due_date }}</span>
+                    {% if task.is_recurring %}<span class="icon">🔁</span>{% endif %}
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="empty">No overdue tasks! ✅</p>
+        {% endif %}
+    </section>
+
+    <!-- Analytics -->
+    <section class="card analytics">
+        <h2>📊 Analytics</h2>
+
+        {% set total = all_tasks | length %}
+        {% set completed = all_tasks | selectattr("is_done") | list | length %}
+        {% set pending = total - completed %}
+        {% set recurring = all_tasks | selectattr("is_recurring") | list | length %}
+
+        <div class="analytics-item">
+            <span>Total Tasks</span>
+            <strong>{{ total }}</strong>
+        </div>
+
+        <div class="analytics-item">
+            <span>✅ Completed</span>
+            <div class="analytics-bar">
+                <div class="analytics-bar-fill green" style="width: {{ (completed * 100 // total) if total else 0 }}%">
+                    {{ (completed * 100 // total) if total else 0 }}%
+                </div>
+            </div>
+        </div>
+
+        <div class="analytics-item">
+            <span>⌛ Pending</span>
+            <div class="analytics-bar">
+                <div class="analytics-bar-fill orange" style="width: {{ (pending * 100 // total) if total else 0 }}%">
+                    {{ (pending * 100 // total) if total else 0 }}%
+                </div>
+            </div>
+        </div>
+
+        <div class="analytics-item">
+            <span>🔁 Recurring</span>
+            <div class="analytics-bar">
+                <div class="analytics-bar-fill blue" style="width: {{ (recurring * 100 // total) if total else 0 }}%">
+                    {{ (recurring * 100 // total) if total else 0 }}%
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<!-- JavaScript to auto-submit checkboxes -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll("input[type='checkbox']").forEach(function (checkbox) {
+            checkbox.addEventListener("change", function () {
+                this.form.submit();
+            });
+        });
+    });
+</script>
+
+{% endblock %}
