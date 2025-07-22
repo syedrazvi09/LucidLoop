@@ -1,15 +1,13 @@
 from flask import Flask
 from flask_migrate import Migrate
-from models import db
-from dashboard import bp  # bp, not dashboard
+from app.models import db
+from app.config import Config
 
 app = Flask(__name__)
-app.config.from_pyfile('config.py')
+app.config.from_object(Config)
 
 db.init_app(app)
 migrate = Migrate(app, db)
-
-app.register_blueprint(bp)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -93,7 +93,7 @@ class ActivityLog(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     activity_type = db.Column(db.String(100))
     timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
-    metadata = db.Column(db.JSON)
+    meta_info = db.Column(db.JSON)
 
 
 class Recommendation(db.Model):
@@ -188,7 +188,7 @@ class HabitEntry(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     habit_id = db.Column(db.Integer, db.ForeignKey('habits.id'))
     date = db.Column(db.Date)
-    completed = db.Column(db.Boolean, deafualt=False)
+    completed = db.Column(db.Boolean, default=False)
 
 
 class ModelVersion(db.Model):
@@ -206,7 +206,7 @@ class Reminder(db.Model):
     __tablename__ = 'reminders'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     message = db.Column(db.String(200))
     remind_at = db.Column(db.DateTime)
     sent = db.Column(db.Boolean, default=False)
@@ -216,8 +216,8 @@ class TimeLog(db.Model):
     __tablename__ = 'time_logs'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    task_id = db.Column(db.Integer, db.ForeignKey('task.id'), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    task_id = db.Column(db.Integer, db.ForeignKey('tasks.id'), nullable=True)
     start_time = db.Column(db.DateTime)
     end_time = db.Column(db.DateTime)
     duration = db.Column(db.Integer)
@@ -227,7 +227,7 @@ class UserSettings(db.Model):
     __tablename__ = 'user_settings'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     theme = db.Column(db.String(20))
     notifications_enabled = db.Column(db.Boolean, default=True)
     timezone = db.Column(db.String(50))
