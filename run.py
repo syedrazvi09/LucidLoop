@@ -14,4 +14,4 @@ app.register_blueprint(bp)
 if __name__ == '__main__':
     app.run(debug=True)
 
-print("This is in Development phase")
+print("This is in Development, and testing phase")
