@@ -168,6 +168,70 @@ class ModelFeedback(db.Model):
     submitted_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 
+class ModelPredictionLog(db.Model):
+    __tablename__ = 'model_prediction_logs'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    model_type = db.Column(db.String(50))
+    prediction = db.Column(db.String(500))
+    input_features = db.Column(db.JSON)
+    confidence_score = db.Column(db.Float)
+    predicted_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    was_accepted = db.Column(db.Boolean)
+
+
+class HabitEntry(db.Model):
+    __tablename__ = 'habit_entries'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    habit_id = db.Column(db.Integer, db.ForeignKey('habits.id'))
+    date = db.Column(db.Date)
+    completed = db.Column(db.Boolean, deafualt=False)
+
+
+class ModelVersion(db.Model):
+    __tablename__ = 'model_versions'
+
+    id = db.Column(db.Integer, primary_key=True)
+    model_type = db.Column(db.String(50))
+    version = db.Column(db.String(50))
+    training_data_info = db.Column(db.JSON)
+    accuracy = db.Column(db.Float)
+    deployed_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+
+class Reminder(db.Model):
+    __tablename__ = 'reminders'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    message = db.Column(db.String(200))
+    remind_at = db.Column(db.DateTime)
+    sent = db.Column(db.Boolean, default=False)
+
+
+class TimeLog(db.Model):
+    __tablename__ = 'time_logs'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    task_id = db.Column(db.Integer, db.ForeignKey('task.id'), nullable=True)
+    start_time = db.Column(db.DateTime)
+    end_time = db.Column(db.DateTime)
+    duration = db.Column(db.Integer)
+
+
+class UserSettings(db.Model):
+    __tablename__ = 'user_settings'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    theme = db.Column(db.String(20))
+    notifications_enabled = db.Column(db.Boolean, default=True)
+    timezone = db.Column(db.String(50))
+
 
 
 
