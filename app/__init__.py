@@ -2,6 +2,7 @@ from flask import Flask
 from flask_migrate import Migrate
 from app.models import db
 from app.config import Config
+from app.views.auth import auth_bp
 
 migrate = Migrate()
 
@@ -11,6 +12,8 @@ def create_app():
 
     db.init_app(app)
     migrate.init_app(app, db)
+
+    app.register_blueprint(auth_bp)
 
 
     return app

@@ -1,3 +1,4 @@
 class Config:
-    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:Rs%40dnan020626@localhost:5432/lucidloop"
+    SECRET_KEY = 'your-very-secret-key'
+    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:yourpassword@localhost:5432/lucidloop"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
