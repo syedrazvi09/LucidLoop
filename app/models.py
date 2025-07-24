@@ -130,6 +130,12 @@ class DailyStats(db.Model):
     focus_score = db.Column(db.Float, default=0.0)
     habit_success_rate = db.Column(db.Float, default=0.0)
 
+class Score(db.Model):
+    __tablename__ = 'scores'
+    id = db.Column(db.Integer, primary_key=True)
+    value = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
 
 class Goal(db.Model):
     __tablename__ = 'goals'

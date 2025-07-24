@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+
+<body>
+    <h2>Welcome to the Home Page</h2>
+    <button id="logoutBtn">Logout</button>
+
+    <script>
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            const res = await fetch('/auth/logout', {
+                method: 'POST'
+            });
+
+            const result = await res.json();
+            alert(result.message);
+            if (res.status === 200) {
+                window.location.href = "/auth/login";
+            }
+        });
+    </script>
+</body>
+
+</html>

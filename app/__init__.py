@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, redirect, url_for
 from flask_migrate import Migrate
 from app.models import db
 from app.config import Config
@@ -14,6 +14,11 @@ def create_app():
     migrate.init_app(app, db)
 
     app.register_blueprint(auth_bp)
+
+    @app.route('/')
+    def root_redirect():
+        return redirect(url_for('auth.login_page'))
+
 
 
     return app
