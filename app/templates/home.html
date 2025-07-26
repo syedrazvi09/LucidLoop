@@ -8,9 +8,14 @@
 
 <body>
     <h2>Welcome to the Home Page</h2>
+    <button id="dashboardBtn">Go to Dashboard</button>
     <button id="logoutBtn">Logout</button>
 
     <script>
+        document.getElementById('dashboardBtn').addEventListener('click', () => {
+            window.location.href = '/dashboard';
+        })
+
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             const res = await fetch('/auth/logout', {
                 method: 'POST'
