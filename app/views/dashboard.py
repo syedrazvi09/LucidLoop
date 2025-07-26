@@ -13,12 +13,3 @@ def dashboard_home():
     return render_template('dashboard.html', username=user.username)
 
 
-@dashboard_bp.route('/view')
-def tasks():
-    if 'user_id' not in session:
-        return redirect(url_for('auth.login_page'))
-    
-    # Tasks from DB
-    tasks = ['Train CNN on dataset', 'Optimize hyperparameters', 'Analyze model logs']
-    return render_template('tasks.html', tasks=tasks)
-
