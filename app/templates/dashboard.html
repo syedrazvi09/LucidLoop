@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Dashboard</title>
-        <link rel="stylesheet" href="/app/static/style.css">
+        <link rel="stylesheet" href="/static/style.css">
     </head>
 
     <body>
@@ -13,6 +13,8 @@
 
             <div class="dashboard-links">
 <a href="{{ url_for('tasks.all_tasks') }}">View Tasks</a><br>
+<a href="{{ url_for('reminders.reminders') }}">Reminders</a><br>
+
             </div>
 
         </div>

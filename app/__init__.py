@@ -5,6 +5,7 @@ from app.config import Config
 from app.views.auth import auth_bp
 from app.views.dashboard import dashboard_bp
 from app.views.tasks import tasks_bp
+from app.views.reminders import reminders_bp
 migrate = Migrate()
 
 def create_app():
@@ -17,6 +18,7 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(tasks_bp)
+    app.register_blueprint(reminders_bp)
 
     @app.route('/')
     def root_redirect():
