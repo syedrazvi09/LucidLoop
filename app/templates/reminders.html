@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Reminders</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Your Reminders</h1>
+
+        <!-- Add Reminder Form -->
+        <form action="{{ url_for('reminders.add_reminder') }}" method="POST">
+            <input type="text" name="message" placeholder="Reminder message" required>
+            <input type="datetime-local" name="remind_at" required>
+            <button type="submit">Add Reminder</button>
+        </form>
+
+        <hr>
+
+        <!-- List of Reminders -->
+        <h2>Upcoming Reminders</h2>
+        <ul>
+            {% for reminder in reminders %}
+            <li>
+                <strong>{{ reminder.message }}</strong> - {{ reminder.remind_at.strftime('%Y-%m-%d %H:%M') }}
+                {% if reminder.sent %}
+                <span style="color: green;">(Sent)</span>
+                {% else %}
+                <span style="color: red;">(Pending)</span>
+                {% endif %}
+                <form action="{{ url_for('reminders.delete_reminder', reminder_id=reminder.id) }}" method="POST"
+                    style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+            {% else %}
+            <p>No reminders yet!</p>
+            {% endfor %}
+        </ul>
+
+        <br>
+        <a href="{{ url_for('dashboard.dashboard') }}">Back to Dashboard</a>
+    </div>
+</body>
+
+</html>
