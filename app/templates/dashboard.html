@@ -1,22 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Dashboard</title>
-        <link rel="stylesheet" href="/static/style.css">
-    </head>
 
-    <body>
-        <div class="container">
-            <h1>Welcome to Your Task Manager</h1>
-            <p>Hello, {{ username }}!</p>
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
 
-            <div class="dashboard-links">
-<a href="{{ url_for('tasks.all_tasks') }}">View Tasks</a><br>
-<a href="{{ url_for('reminders.reminders') }}">Reminders</a><br>
+<body>
+    <div class="container">
+        <h1>Welcome to Your Task Manager</h1>
+        <p>Hello, {{ username }}!</p>
 
-            </div>
+        <div class="dashboard-links">
+            <a href="{{ url_for('tasks.all_tasks') }}">View Tasks</a><br>
+            <a href="{{ url_for('reminders.reminders') }}">Reminders</a><br>
+            <a class="pomodoro-btn" href="{{ url_for('pomodoro.timer') }}">Start Pomodoro</a>
+
+
+
 
         </div>
-    </body>
+    </div>
+</body>
+
 </html>

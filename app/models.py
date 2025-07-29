@@ -43,6 +43,8 @@ class Task(db.Model):
     predicted_best_time = db.Column(db.String(10))
     notes = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    repeat = db.Column(db.String(20), default='none')
+
 
 
 class Habit(db.Model):

@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash, jsonify
 from app.models import db, Task, User
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 tasks_bp = Blueprint('tasks', __name__, url_prefix='/tasks')
 
@@ -31,14 +31,17 @@ def add_task():
 
     data = request.form
     new_task = Task(
-        title=data.get('title'),
-        category=data.get('category'),
-        due_date=datetime.strptime(data.get('due_date'), '%Y-%m-%dT%H:%M') if data.get('due_date') else None,
-        priority=data.get('priority'),
-        notes=data.get('notes'),
-        user_id=user.id,
-        predicted_best_time=data.get('predicted_best_time') or "N/A"
-    )
+    title=data.get('title'),
+    category=data.get('category'),
+    due_date=datetime.strptime(data.get('due_date'), '%Y-%m-%dT%H:%M') if data.get('due_date') else None,
+    priority=data.get('priority'),
+    notes=data.get('notes'),
+    repeat=data.get('repeat'),
+    user_id=user.id,
+    predicted_best_time=data.get('predicted_best_time') or "N/A"
+    
+)
+
 
     db.session.add(new_task)
     db.session.commit()
@@ -74,8 +77,35 @@ def complete_task(task_id):
         flash("Unauthorized!")
         return redirect(url_for('tasks.all_tasks'))
 
+    # Mark original as done
     task.is_done = True
     task.completed_at = datetime.now(timezone.utc)
+
+    # Recurrence logic
+    if task.due_date and task.category and task.priority and task.repeat in ['daily', 'weekly', 'weekdays']:
+
+        next_due = None
+        if task.repeat == 'daily':
+            next_due = task.due_date + timedelta(days=1)
+        elif task.repeat == 'weekly':
+            next_due = task.due_date + timedelta(weeks=1)
+        elif task.repeat == 'weekdays':
+            next_due = task.due_date + timedelta(days=1)
+            if next_due.weekday() >= 5:  # 5 = Saturday, 6 = Sunday
+                next_due += timedelta(days=(7 - next_due.weekday()))
+
+        if next_due:
+            new_task = Task(
+                title=task.title,
+                category=task.category,
+                due_date=next_due,
+                priority=task.priority,
+                notes=task.notes,
+                repeat=task.repeat,
+                user_id=user.id
+            )
+            db.session.add(new_task)
+
     db.session.commit()
     flash("Task marked as complete.")
     return redirect(url_for('tasks.all_tasks'))

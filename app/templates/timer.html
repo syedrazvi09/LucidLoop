@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pomodoro Timer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f7f7f7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            color: #e74c3c;
+            font-size: 3em;
+        }
+
+        #timer {
+            font-size: 5em;
+            margin: 20px 0;
+            color: #2c3e50;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            background-color: #27ae60;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #219150;
+        }
+
+        .status {
+            margin-top: 10px;
+            font-size: 1.3em;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Pomodoro Timer</h1>
+    <div id="timer">25:00</div>
+    <button id="startBtn">Start</button>
+    <div class="status" id="statusText">Ready to work!</div>
+
+    <script>
+        const timerDisplay = document.getElementById("timer");
+        const startBtn = document.getElementById("startBtn");
+        const statusText = document.getElementById("statusText");
+
+        let isRunning = false;
+        let isBreak = false;
+        let timer;
+        let totalSeconds;
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        function startTimer(duration) {
+            clearInterval(timer);
+            totalSeconds = duration;
+            timerDisplay.textContent = formatTime(totalSeconds);
+
+            timer = setInterval(() => {
+                totalSeconds--;
+
+                if (totalSeconds <= 0) {
+                    clearInterval(timer);
+                    if (!isBreak) {
+                        statusText.textContent = "Time for a break!";
+                        startTimer(5 * 60); // 5-minute break
+                        isBreak = true;
+                    } else {
+                        statusText.textContent = "Pomodoro complete. Ready for another?";
+                        timerDisplay.textContent = "25:00";
+                        isBreak = false;
+                        isRunning = false;
+                        startBtn.disabled = false;
+                    }
+                } else {
+                    timerDisplay.textContent = formatTime(totalSeconds);
+                }
+            }, 1000);
+        }
+
+        startBtn.addEventListener("click", () => {
+            if (!isRunning) {
+                isRunning = true;
+                statusText.textContent = "Focus time!";
+                startBtn.disabled = true;
+                startTimer(25 * 60); // 25-minute work session
+            }
+        });
+    </script>
+</body>
+
+</html>
